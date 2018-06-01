@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-fontlevel="0" data-lang="zh" data-v10="true" data-device="pc" data-dpr="1" style="font-size: 50px">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no">
+    <title></title>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        ;(function () {
+            // 全局命名空间
+            var info = window.info = {};
+
+            // 取UA参数
+            var getUA = function (name) {
+                var reg = new RegExp('(;|^)\s*' + name + '\s*:([^;]*)')
+                var result = navigator.userAgent.match(reg)
+                if (result && (result.length === 3)) {
+                    return result[2];
+                } else {
+                    return null;
+                }
+            }
+
+            // 记录错误日志
+            var datalyError = location.host.match('yunzhijia.com') ? function (err) {
+                window._dataly && window._dataly.push(['_trackEvent', {error: err}]);
+            } : function (err) {
+                console.log(JSON.stringify(err))
+            }
+
+            // 发送HTML事件
+            var dispatchHTMLEvent = function (name, params) {
+                var event = document.createEvent('HTMLEvents')
+                Object.assign(event, params)
+                event.initEvent(name)
+                document.dispatchEvent(event)
+            }
+
+            // 全局变量 =================================
+
+            // 语言版本
+            info.language = 'zh-CN';
+
+            info.isV9 = false;
+            info.isV10 = true;
+            info.isIos = false;
+            info.isAndroid = false;
+            info.isIphoneX = false;
+            info.statusBarHeight = 0;
+            info.navBarHeight = 0;
+            info.topHeight = 0;
+            info.tabBarHeight = 0;
+            info.IosHeaderHeight = 0;
+            info.bodyMarginTop = 0;
+
+            // 构建时间
+            info.buildDate = '<%= htmlWebpackPlugin.options.buildDate %>';
+
+            // 全局函数 ================================
+            window.getUA = getUA
+            window.datalyError = datalyError
+            window.dispatchHTMLEvent = dispatchHTMLEvent
+        }());
+    </script>
+    <script src="static/qing/qing.js"></script>
+    <script src="static/core.js"></script>
+    <script>
+        // 页面初始化
+        ;(function () {
+            var jsApiList = [
+                'toast',
+                'request',
+                'cloudoffice.request',
+                'cloudoffice.showCardNotify',
+                'cloudoffice.clearCardNotify',
+                'cloudoffice.checkAppAuth',
+                'ui.toast',
+                'runtime.jsReady'
+            ];
+
+            var jsEventList = [
+                'appear',
+                'disappear',
+                'cardUpdate'
+            ];
+
+            // 初始化qing.js
+            window.qing.config({
+                debug: false,
+                jsApiList: jsApiList,
+                jsEventList: jsEventList
+            });
+
+            qing.call('getClientInfo', {
+                success (res) {
+                    info.origin = res.data.origin
+                    window.coreInit(function () {
+                        var timer = setInterval(function () {
+                            if (window.appInit) {
+                                clearInterval(timer)
+                                // appInit
+                                try {
+                                    window.appInit();
+                                } catch (e) {}
+                            }
+                        }, 9);
+                    })
+                }
+            })
+        }())
+    </script>
+    <!-- built files will be auto injected -->
+    <script src="static/dataly.js"></script>
+    <script>
+        // 统计sdk初始化
+        window._dataly.push(["_setAccount" , "cloud-office"]);
+    </script>
+</body>
+</html>

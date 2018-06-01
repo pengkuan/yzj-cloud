@@ -1,0 +1,64 @@
+cache:
+  key: ${CI_COMMIT_SHA}
+  paths:
+    # - node_modules/
+    - dist/
+
+before_script:
+  - yarn config set registry http://172.20.176.77:4873
+  - npm set registry http://172.20.176.77:4873
+  # - export PHANTOMJS_CDNURL=https://npm.taobao.org/dist/phantomjs
+
+stages:
+  - build
+  - deploy_dev
+  - deploy_devtest
+  - deploy_kdtest
+  - deploy_production
+
+build source:
+  stage: build
+  only:
+    - master
+    - release
+    - publish
+    - production
+  script:
+    - yarn install
+    - npm run build
+
+deploy to dev:
+  stage: deploy_dev
+  only:
+    - master
+  script:
+    - bash /root/script/deploytodev.sh
+  environment:
+    name: dev
+
+deploy to devtest:
+  stage: deploy_devtest
+  only:
+    - release
+  script:
+    - bash /root/script/devtest.sh
+  environment:
+    name: devtest
+
+deploy to kdtest:
+  stage: deploy_kdtest
+  only:
+    - publish
+  script:
+    - bash /root/script/kdtest.sh
+  environment:
+    name: kdtest
+
+deploy to production:
+  stage: deploy_production
+  only:
+    - production
+  script:
+    - bash /root/script/production.sh
+  environment:
+    name: production

@@ -1,0 +1,34 @@
+@import './variable.less';
+
+// 利用flex实现水平垂直居中
+.flex-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.text-center{
+    text-align: center
+}
+
+// 卡片容器-->有按钮的卡片请使用这个class
+.card-content{
+    .px2rem(min-height, 178);
+}
+// 卡片容器-->没有按钮的卡片请使用这个class
+.card-content.card-no-buttons{
+    .px2rem(min-height, 218);
+    .px2rem(padding-bottom, 40);
+}
+.card-content.card-mini{
+    .px2rem(min-height, 30);
+}
+.card-content.card-mini.card-no-buttons{
+    .px2rem(min-height, 70);
+    .px2rem(padding-bottom, 40);
+}
+
+// 抱歉文本
+.text-sorry{
+    color: #82929c;
+}

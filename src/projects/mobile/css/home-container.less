@@ -1,0 +1,143 @@
+.firstBg {
+    background: url(./header/firstBg.jpg) no-repeat center;
+    background-size: 100% auto;
+}
+.secondBg {
+    background: linear-gradient(-40deg, #24C68D 0%, #15C3C8 100%);
+    background: -webkit-linear-gradient(130deg, #24C68D 0%, #15C3C8 100%);
+}
+.thirdBg {
+    background: linear-gradient(-40deg, #24C3C6 0%, #23B0E3 100%);
+    background: -webkit-linear-gradient(130deg, #24C3C6 0%, #23B0E3 100%);
+}
+.fourBg {
+    background: linear-gradient(-40deg, #26C2DD 0%, #2C8FF0 100%);
+    background: -webkit-linear-gradient(130deg, #26C2DD 0%, #2C8FF0 100%);
+}
+.fiveBg {
+    background: linear-gradient(-40deg, #2A8AF0 0%, #2E46DD 100%);
+    background: -webkit-linear-gradient(130deg, #2A8AF0 0%, #2E46DD 100%);
+}
+.sixBg {
+    background: linear-gradient(-1deg, #F9987D 2%, #FFA378 51%, #F39583 63%, #DA869A 71%, #865AE2 86%, #2D5FE4 100%);
+    background: -webkit-linear-gradient(91deg, #F9987D 2%, #FFA378 51%, #F39583 63%, #DA869A 71%, #865AE2 86%, #2D5FE4 100%);
+}
+.sevenBg {
+    background: linear-gradient(-40deg, #D253BB 0%, #3041A9 100%);
+    background: -webkit-linear-gradient(130deg, #D253BB 0%, #3041A9 100%);
+}
+.eightBg {
+    background: url(./header/eightBg.jpg) no-repeat center;
+    background-size: 100% auto;
+}
+
+.home-container {
+    width: 100%;
+    height: 100%;
+    .home-header {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        color: #fff;
+        &.overlayBg:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0) 0, rgba(0,0,0,0) 6rem, #F8F9FB 6rem, #F8F9FB 100%);
+            background: -webkit-linear-gradient(rgba(0,0,0,0) 0, rgba(0,0,0,0) 6rem, #F8F9FB 6rem, #F8F9FB 100%);
+        }
+        .header-activity-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
+    .greeting {
+        margin: 1.8rem .24rem 0 .24rem;
+        height: 1.16rem;
+        display: flex;
+        flex-direction: column;
+        // align-items: center;
+        position: relative;
+        color: #ffffff;
+        p {
+            font-family: PingFangSC-Thin, Helvetica, sans-serif;
+            &:last-child{
+                font-size: .36rem;
+            }
+            &:first-child{
+                font-size: .48rem;
+            }
+        }
+    }
+    .home-wrap {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .home-page {
+        width: 100%;
+        height: 100%;
+    }
+    .home-main {
+        // transform卡片跟随火箭动画
+        position: relative;
+        min-height: 100%;
+        transition: transform .5s ease;
+        display: flex;
+        .middle-radius {
+            width: 100%;
+            height: .7rem;
+            margin-top: 4.4rem;
+            background: url(./header/middle-radius.png) center center no-repeat;
+            background-size: 7.5rem;
+            position: relative;
+            &:after {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: .7rem;
+                background-color: #F8F9FB;
+                width: 100%;
+                height: .2rem;
+            }
+        }
+        .home-slot {
+            position: relative;
+            padding: 0 .24rem 1.22rem .24rem;
+            margin-top: -.94rem;
+            transition: transform .8s ease; // 卡片跟随火箭动画
+        }
+        .share-click-area {
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            height: 4.16rem;
+        }
+    }
+    .home-layer {
+        flex: 1;
+        // min-height: 100%;
+        overflow: hidden;
+        background-image: linear-gradient(rgba(0,0,0,0) 0, rgba(0,0,0,0) 5.1rem, #F8F9FB 5.1rem, #F8F9FB 100%); // 5.1
+        background-image: -webkit-linear-gradient(rgba(0,0,0,0) 0, rgba(0,0,0,0) 5.1rem, #F8F9FB 5.1rem, #F8F9FB 100%); // 5.1
+        // transition: transform .6s linear; // transform卡片下拉过渡到雷达动画
+        -webkit-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+    }
+    .home-radar {
+        width: 100%;
+        height: 100%;
+    }
+}
+.home-wrap::-webkit-scrollbar {
+    display: none;
+}

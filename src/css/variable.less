@@ -1,0 +1,39 @@
+// px转rem
+.px2rem(@name, @px){
+    @{name}: @px / 50 * 1rem;
+}
+
+// 字体缩放
+// 元映射 -1: 15   0: 16   1: 17   2: 18   3: 19   4: 20
+// 整体减少 2
+.px2rem(@name, @px) when (@name = font-size) {
+    font-size: @px / 50 * 1rem;
+    [data-fontlevel = "-1"] & {
+        font-size: (@px - 1) / 50 * 1rem;
+    }
+    [data-fontlevel = "0"] & {
+        font-size: @px / 50 * 1rem;
+    }
+    [data-fontlevel = "1"] & {
+        font-size: (@px + 1) / 50 * 1rem;
+    }
+    [data-fontlevel = "2"] & {
+        font-size: (@px + 2) / 50 * 1rem;
+    }
+    [data-fontlevel = "3"] & {
+        font-size: (@px + 3) / 50 * 1rem;
+    }
+    [data-fontlevel = "4"] & {
+        font-size: (@px + 4) / 50 * 1rem;
+    }
+}
+
+.card-fontsize {
+    .px2rem(font-size, 14)
+}
+.card-title-fontsize {
+    .px2rem(font-size, 14)
+}
+.card-button-fontsize {
+    .px2rem(font-size, 14)
+}

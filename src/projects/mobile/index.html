@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html data-mobile="true" data-page="index">
+    <head>
+        <script>
+            window.console = window.console || {};
+            console.time = console.time || function () {};
+            console.timeEnd = console.timeEnd || function () {};
+            // console.log = console.info = function () {};
+            console.time('加载HTML、CSS和内联SCRIPT');
+        </script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <% if (htmlWebpackPlugin.options.enableCSP) { %>
+        <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' 'unsafe-eval' do.yunzhijia.com www.yunzhijia.com analytics.yunzhijia.com 192.168.22.144 192.168.1.49 dev.kdweibo.cn devtest.kdweibo.cn kdtest.kdweibo.cn dotest.kdweibo.cn localhost">
+        <% } %>
+        <title> </title>
+        <style>
+            a, img {
+                pointer-events: none;
+            }
+            body{
+                -moz-user-select:none;
+                -webkit-user-select:none;
+                user-select:none;
+                font-size: 0.28rem;
+                margin: 0;
+                padding: 0;
+            }
+
+            [data-android][data-v10][data-page="index"] body,
+            [data-android][data-v10][data-page="intro"] body {
+                position: relative;
+                margin-top: 312px;
+            }
+
+            /* app contianer ------------------------------------------- */
+            #app{
+                position: relative;
+                height: 500px;
+                /* background: #F8F9FB;
+                background: red; */
+            }
+
+            /* 加载中 or 加载失败时不显示app */
+            body[data-status="failed"] #app,
+            body[data-status="loading"] #app{
+                opacity: 0;
+                height: 10px;
+                overflow: hidden;
+            }
+
+            /* v9 bar -------------------------------------------------- */
+            #v9bar {
+                display: none;
+                width: 100%;
+                height: 64px;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+            /* iphone-X  */
+            @media screen and (device-height: 812px) {
+                #v9bar {
+                    height: 88px;
+                }
+            }
+            /* 首页 加载中/加载失败时显示bar */
+            [data-v9][data-page="index"] body[data-status="loading"] #v9bar,
+            [data-v9][data-page="index"] body[data-status="failed"] #v9bar,
+            [data-v9][data-page="intro"] body[data-status="loading"] #v9bar,
+            [data-v9][data-page="intro"] body[data-status="failed"] #v9bar{
+                display: block;
+                background: #2A8AF0;
+            }
+
+            /* 加载中占位图 --------------------------------------------- */
+
+            #loading-placeholder{
+                display: none; /* 正常状况下隐藏 */
+                z-index: 9999;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin-top: 0.16rem;
+                background: #FFF;
+                padding-bottom: 50px;
+            }
+            /* 页面加载时显示占位图 */
+            body[data-status="loading"] #loading-placeholder{
+                display: block;
+            }
+
+            .placeholder-title,
+            .placeholder-card-title,
+            .placeholder-task-calendar,
+            .placeholder-item{
+                width: auto;
+                height: 18px;
+                background: #f7f9f9;
+                margin-top: 19px;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+            .placeholder-title{
+                width: 100px;
+            }
+            .placeholder-card-title{
+                width: 100px;
+            }
+            .placeholder-task-calendar{
+                height: 210px;
+                margin-bottom: 20px;
+            }
+            .placeholder-card-title::before,
+            .placeholder-item::before{
+                content: ' ';
+                display: inline-block;
+                margin-left: 18px;
+                width: 12px;
+                height: 100%;
+                background: #FFF;
+            }
+
+            /* V9 margin */
+            [data-v9][data-page="index"] #loading-placeholder,
+            [data-v9][data-page="intro"] #loading-placeholder{
+                margin-top: 64px;
+            }
+            /* iphone-X  */
+            @media screen and (device-height: 812px) {
+                [data-v9] #loading-placeholder{
+                    margin-top: 88px;
+                }
+            }
+
+            .loading-placeholder-type{ display: none; width: 100%; }
+            /* 首页占位图 */
+            [data-page="index"] .loading-placeholder-type-index,
+            [data-page="intro"] .loading-placeholder-type-index{ display: block; }
+            /* 设置页的占位图 */
+            [data-page="setting"] .loading-placeholder-type-setting{ display: block; }
+
+            /* 加载失败 ----------------------------------------------- */
+            body[data-status="failed"]::before,
+            body[data-status="failed"]::after{
+                display: block;
+                content: ' ';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100px;
+                margin-top: 85px; /* iphone-6/7/8 */
+            }
+
+            /* 按压效果  */
+            body[data-status="failed"][data-active]::after{
+                opacity: 0.7;
+            }
+
+            /* iphone-X  */
+            @media screen and (max-device-height: 812px) {
+                body[data-status="failed"]::before,
+                body[data-status="failed"]::after{
+                    margin-top: 157px;
+                }
+            }
+
+            /* iphone-6/7/8 plus  */
+            @media screen and (max-device-height: 736px) {
+                body[data-status="failed"]::before,
+                body[data-status="failed"]::after{
+                    margin-top: 119px;
+                }
+                [data-v9] body[data-status="failed"]::before,
+                [data-v9] body[data-status="failed"]::after{
+                    margin-top: 263px;
+                }
+            }
+
+            /* iphone-6/7/8  */
+            @media screen and (max-device-height: 667px) {
+                body[data-status="failed"]::before,
+                body[data-status="failed"]::after{
+                    margin-top: 85px;
+                }
+            }
+
+            /* iphone-5/se  */
+            @media screen and (max-device-height: 568px) {
+                body[data-status="failed"]::before,
+                body[data-status="failed"]::after{
+                    margin-top: 35px;
+                }
+            }
+
+            /* 加载失败飞碟图案  */
+            body[data-status="failed"]::before{
+                height: 100px;
+                background: center center no-repeat;
+                background-size: 100px 100px;
+                background-image: url("data:image/png;base64,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");
+            }
+
+            /* 加载失败提示文字  */
+            body[data-status="failed"]::after{
+                content: '加载失败，点击页面重新加载';
+                text-align: center;
+                padding-top: 110px;
+                font-size: 12px;
+                font-family: PingFangSC-Regular;
+                color: rgba(118,136,147,1);
+            }
+        </style>
+        <script>
+            // 全局命名空间
+            var info = {};
+            info.origin = location.origin;
+
+            // polyfill
+            Object.assign || (Object.assign = function assign (target) {
+                if (arguments.length >= 2) {
+                    Array.prototype.slice.call(arguments, 1).forEach(function (src) {
+                        if (typeof src === 'object') {
+                            Object.keys(src).forEach(function (key) {
+                                target[key] = src[key];
+                            });
+                        }
+                    });
+                }
+                return target;
+            });
+
+            // polyfill
+            Array.prototype.includes || (Array.prototype.includes = function includes(item) {
+                return this.some(function (n) {
+                    return n === item;
+                });
+            });
+
+            // REM设置
+            ;(function () {
+                function setRem() {
+                    var dpr = window.devicePixelRatio;
+                    var fontSize;
+                    var docEl = document.documentElement;
+
+                    if (!docEl) return;
+
+                    if (window.devicePixelRatio >= 1.5) {
+                        dpr = 2;
+                    }
+                    docEl.setAttribute('data-dpr', dpr);
+
+                    var userAgent = navigator.userAgent;
+                    if (userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) || userAgent.match(/Android/i)) {
+                        fontSize = docEl.clientWidth / 7.5;
+
+                        if (fontSize < 50) {
+                            // fontSize = 50;
+                        } else if (fontSize > 75) {
+                            fontSize = 75;
+                        }
+                        return docEl.style.fontSize = fontSize + 'px';
+                    }
+
+                    docEl.style.fontSize = '50px';
+                };
+
+                // 解决ios中预加载时 clientWidth 不正确的问题
+                window.onresize = function () {
+                    setRem();
+                }
+
+                window.remTimer = setInterval(setRem, 200);
+
+                setRem();
+            } ());
+        </script>
+    </head>
+    <body onload="clearInterval(remTimer);" data-status="loading">
+        <script>
+            ;(function () {
+                // 页面
+                info.page = location.hash.replace(/#\/?/, '') || 'index';
+                document.documentElement.setAttribute('data-page', info.page);
+
+                // 是否生产环境
+                info.yzj = !!location.hostname.match(/^(www|do)\./);
+            } ());
+        </script>
+        <div id="app"></div>
+        <div id="loading-placeholder">
+            <div class="loading-placeholder-type loading-placeholder-type-index">
+                <div class="placeholder-card-title"></div>
+                <div class="placeholder-task-calendar"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+            </div>
+            <div class="loading-placeholder-type loading-placeholder-type-setting">
+                <div class="placeholder-title"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-title"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+                <div class="placeholder-item"></div>
+            </div>
+        </div>
+        <div id="v9bar"></div>
+        <script>
+            ;(function () {
+                // 5秒加载超时
+                var loadingTimeout = 8;
+                var onpress = false;
+                var body = document.body;
+                var isLoaded = false;
+
+                if (top) {
+                    // 绑定事件
+                    bindV10LoadingEvent();
+
+                    // 判断加载超时
+                    setTimeout(function () {
+                        if (!isLoaded) {
+                            body.setAttribute('data-status', 'failed');
+                            datalyError('工作台加载超时');
+                        }
+                    }, loadingTimeout * 1000);
+                }
+
+                // V10 加载中/加载失败处理
+                function bindV10LoadingEvent () {
+                    document.addEventListener('touchstart', function (e) {
+                        onpress = true;
+                    });
+
+                    document.addEventListener('touchmove', function () {
+                        onpress = false;
+                    });
+
+                    // 点击加载失败界面
+                    document.addEventListener('touchend', function () {
+                        if (!onpress) return;
+
+                        // 点击失败界面
+                        if (body.getAttribute('data-status') === 'failed') {
+                            // 如果页面已加载完成，直接显示，否则刷新
+                            if (isLoaded) {
+                                body.setAttribute('data-status', 'loaded');
+                                datalyError('工作台加载超时-点击显示');
+                            } else {
+                                body.setAttribute('data-active', 'true');
+                                datalyError('工作台加载超时-刷新页面');
+                                setTimeout(function () {
+                                    body.removeAttribute('data-active');
+                                    location.reload();
+                                }, 100)
+                            }
+                        }
+                    });
+
+                    // 组件加载完成
+                    document.addEventListener('pageIsReady', function () {
+                        isLoaded = true;
+                        console.timeEnd('等待PageReady')
+                        console.timeEnd('占位图时长');
+
+                        // 页面状态：加载中 => 加载完成
+                        if (body.getAttribute('data-status') === 'loading') {
+                            body.setAttribute('data-status', 'loaded');
+                        }
+                    });
+                }
+            }());
+            ;(function () {
+                // 取UA参数
+                var getUA = function (name) {
+                    var reg = new RegExp('(;|^)\s*' + name + '\s*:([^;]*)')
+                    var result = navigator.userAgent.match(reg)
+                    if (result && (result.length === 3)) {
+                        return result[2];
+                    } else {
+                        return null;
+                    }
+                }
+
+                // 记录错误日志
+                var datalyError = location.host.match('yunzhijia.com') ? function (err) {
+                    window._dataly && window._dataly.push(['_trackEvent', {error: err}]);
+                } : function (err) {
+                    console.log(JSON.stringify(err))
+                }
+
+                // 发送HTML事件
+                var dispatchHTMLEvent = function (name, params) {
+                    var event = document.createEvent('HTMLEvents')
+                    Object.assign(event, params)
+                    event.initEvent(name)
+                    document.dispatchEvent(event)
+                }
+
+
+                // 全局变量 =================================
+
+                // 语言版本
+                if ((getUA('lang') || '').split('-')[0] === 'en') {
+                    info.language = 'en-US';
+                } else {
+                    info.language = 'zh-CN';
+                }
+
+                // 客户端UA中的Qing版本号
+                info.clientVersion = Number((navigator.userAgent.match(/^Qing\/\d+\.([^;]+)/) || [])[1] || '0');
+
+                // 工作台版本
+                info.isV9 = info.clientVersion < 9.7;
+                info.isV10 = info.clientVersion >= 9.7;
+                // info.isV10 = true
+                // info.isV9 = false
+
+                // 测速埋点
+                info.timePoints = { htmlStart: Date.now() };
+
+                info.isIos = navigator.userAgent.match(/iphone/i)
+                info.isAndroid = navigator.userAgent.match(/android/i)
+
+                // 是否iphoneX
+                info.isIphoneX = info.isIos && (screen.height == 812 && screen.width == 375);
+
+                // 状态栏高度
+                if (info.isIos) {
+                    info.statusBarHeight = info.isIphoneX ? 44 : 20;
+                } else {
+                    info.statusBarHeight = 32;
+                }
+
+                // 导航栏高度
+                if (info.isIos) {
+                    info.navBarHeight = 44;
+                } else {
+                    info.navBarHeight = 44;
+                }
+
+                info.topHeight = info.statusBarHeight + info.navBarHeight;
+
+                // tab栏高度
+                info.tabBarHeight = info.isIphoneX ? 83 : 49;
+
+                // 头部（原生头部）高度 = 屏幕高度 - WebView高度 - 状态栏高度 - 导航栏高度 - tab栏高度
+                info.IosHeaderHeight = screen.height - document.documentElement.clientHeight - info.statusBarHeight - info.navBarHeight - info.tabBarHeight;
+
+                // android的v10首页有marginTop （因其实现方式是盖了一个原生头部在H5上）
+                if (info.isAndroid && info.isV10 && (info.page === 'index' || info.page === 'intro')) {
+                    info.bodyMarginTop = 312;
+                } else {
+                    info.bodyMarginTop = 0;
+                }
+
+                // 构建时间
+                info.buildDate = '<%= htmlWebpackPlugin.options.buildDate %>' || new Date().toLocaleString();
+
+
+                // 根节点属性 ===============================
+
+                // 根节点属性：工作台版本
+                if (info.isV10) {
+                    document.documentElement.setAttribute('data-v10', 'true');
+                } else {
+                    document.documentElement.setAttribute('data-v9', 'true');
+                }
+
+                // 根节点属性：字体缩放级别
+                document.documentElement.setAttribute('data-fontlevel', getUA('fontNum') || '0');
+
+                // 根节点属性：语言
+                document.documentElement.setAttribute('data-lang', info.language.split('-')[0]);
+
+                // 根节点属性：平台
+                if (info.isAndroid) {
+                    document.documentElement.setAttribute('data-android', 'true');
+                } else if (info.isIos) {
+                    document.documentElement.setAttribute('data-ios', 'true');
+                }
+
+
+                // 全局函数 ================================
+                window.getUA = getUA
+                window.datalyError = datalyError
+                window.dispatchHTMLEvent = dispatchHTMLEvent
+            }());
+        </script>
+        <script>
+            console.timeEnd('加载HTML、CSS和内联SCRIPT')
+            console.time('加载qing.js')
+            console.time('占位图时长');
+        </script>
+        <script src="static/qing/qing.js"></script>
+        <script src="static/core.js"></script>
+        <script>
+            // 页面初始化
+            ;(function () {
+                var jsApiList = [
+                    'toast',
+                    'request',
+                    'cloudoffice.request',
+                    'cloudoffice.showCardNotify',
+                    'cloudoffice.clearCardNotify',
+                    'cloudoffice.getRoleType',
+                    'cloudoffice.checkAppAuth',
+                    'cloudoffice.shareText',
+                    'cloudoffice.downloadPic',
+                    'cloudoffice.checkWorkbenchUpdate',
+                    'ui.changeNavBarStyle',
+                    'ui.toast',
+                    'runtime.jsReady',
+                    'cloudoffice.textShareClosed',
+                    'cloudoffice.dataReport',
+                    'ui.webViewScrollTo',
+                    'webViewPaddingTop',
+                    'ui.webViewPaddingTop'
+                ];
+
+                var jsEventList = [
+                    'appear',
+                    'disappear',
+                    'cardUpdate',
+                    'topGuideTapped',
+                    'webViewScrollChange'
+                ];
+
+                // 初始化qing.js
+                window.qing.config({
+                    debug: false,
+                    jsApiList: jsApiList,
+                    jsEventList: jsEventList
+                });
+
+                // QingReady -> coreInit -> appInit
+                qing.ready(function () {
+                    console.timeEnd('加载qing.js')
+                    console.time('加载core')
+                    // V9禁用页面反弹效果
+                    if (info.isV9) {
+                        qing.call('setBounce', {
+                            enable: 0
+                        })
+                    };
+                    // qing.call('ui.webViewPaddingTop', {
+                    //     success: function (e) {
+                    //         if (e.data && (typeof e.data.paddingTop === 'number')) {
+                    //             info.bodyMarginTop = e.data.paddingTop
+                    //         }
+                    //     }
+                    // })
+                    // coreInit
+                    window.coreInit(function () {
+                        console.timeEnd('加载core')
+                        console.time('等待appInit')
+                        var timer = setInterval(function () {
+                            if (window.appInit) {
+                                clearInterval(timer)
+                                console.timeEnd('等待appInit')
+                                // appInit
+                                try {
+                                    console.time('执行appInit')
+                                    window.appInit();
+                                    console.time('等待PageReady')
+                                } catch (e) {}
+                                // other
+                                afterAppInit()
+                            }
+                        }, 9);
+                    })
+                });
+
+                function afterAppInit () {
+                    // 客户端检查
+                    if (!navigator.userAgent.match(/Qing/)) {
+                        document.body.getElementById('app').innerHTML = '请使用云之家客户端运行本页面'
+                    };
+                }
+            }())
+        </script>
+        <!-- built files will be auto injected -->
+        <script src="static/dataly.js"></script>
+        <script src="static/analytics.0.01.js"></script>
+        <script>
+            // 统计sdk初始化
+            window._dataly.push(["_setAccount" , "cloud-office"]);
+
+            // 测速sdk初始化
+            window.speedSdk && window.speedSdk.init('20171114141252')
+        </script>
+    </body>
+</html>

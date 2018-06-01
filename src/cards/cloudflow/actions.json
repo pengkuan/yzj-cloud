@@ -1,0 +1,41 @@
+[{
+    "name": "quick-flow",
+    "title": "快捷审批",
+    "actions": [{
+        "name": "getData",
+        "type": "action",
+        "url": "https://192.168.22.144/workflow/api/v1/flow/widgetTodoList",
+        "method": "post",
+        "params": "pageSize=5&pageNumber=1"
+    },{
+        "name": "passFlow",
+        "type": "action",
+        "url": "https://192.168.22.144/workflow/api/v1/flow/agreeMsgFromWidget",
+        "method": "post",
+        "params": ""
+    }],
+    "dataSourceAction": "getData"
+}, {
+    "name": "track-flow",
+    "title": "审批追踪",
+    "actions": [{
+        "name": "getData",
+        "type": "action",
+        "url": "https://192.168.22.144/workflow/api/v1/flow/myFlowListFromWidget",
+        "method": "post",
+        "params": "pageSize=5&pageNumber=1"
+    },{
+        "name": "knowIt",
+        "type": "action",
+        "url": "https://192.168.22.144/workflow/api/v1/flow/addKnowStatus",
+        "method": "post",
+        "params": ""
+    }, {
+        "name": "remained",
+        "type": "action",
+        "url": "http://192.168.22.144/workflow/api/v1/flow/reminded",
+        "method": "post",
+        "params": ""
+    }],
+    "dataSourceAction": "getData"
+}]
